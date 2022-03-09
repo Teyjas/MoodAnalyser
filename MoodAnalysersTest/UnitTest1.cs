@@ -32,6 +32,10 @@ public class TestMood
         Assert.AreEqual("Happy", result);
     }
 
+    /// <summary>
+    /// Tests the mood exception.
+    /// </summary>
+    /// <param name="message">The message.</param>
     [TestMethod]
     [ExpectedException(typeof(MoodAnalysisException))]
     [DataRow(null)]
@@ -42,14 +46,21 @@ public class TestMood
         moodAnalyser.AnalyseMood();
     }
 
+    /// <summary>
+    /// Test mood reflection default ctor for valid names.
+    /// </summary>
     [TestMethod]
-    public void TestMoodReflectionDefaultCtor()
+    public void ValidTestMoodReflectionDefaultCtor()
     {
         string message = null;
         MoodAnalyser expected = new MoodAnalyser(message);
-        object obj = MoodAnalyserFactory.CreateMoodAnalyserObject("MoodAnalyzer.MoodAnalyser", "MoodAnalyser");
+        object obj = MoodAnalyserReflector.CreateMoodAnalyserObject("MoodAnalyzer.MoodAnalyser", "MoodAnalyser");
         Assert.AreNotEqual(expected, obj);
     }
+
+    /// <summary>
+    /// Test mood reflection default ctor for invalid names.
+    /// </summary>
     [TestMethod]
     [ExpectedException(typeof(MoodAnalysisException))]
     [DataRow("MoodAnalyzer.MoodAnalysers", "MoodAnalyser", "sad")]
@@ -57,7 +68,21 @@ public class TestMood
     public void InvalidTestMoodReflectionParamCtor(string className, string ctorName, string message)
     {
         MoodAnalyser expected = new MoodAnalyser(message);
-        object obj = MoodAnalyserFactory.CreateMoodAnalyserObject(className, ctorName, message);
+        object obj = MoodAnalyserReflector.CreateMoodAnalyserObject(className, ctorName, message);
         Assert.AreNotEqual(expected, obj);
+    }
+
+    /// <summary>
+    /// Test reflector invoke for invalid method and messages
+    /// </summary>
+    /// <param name="method">The method.</param>
+    /// <param name="message">The message.</param>
+    [TestMethod]
+    [ExpectedException(typeof(MoodAnalysisException))]
+    [DataRow("AnalyzeMood", "Happy")]
+    [DataRow("AnalyseMood", null)]
+    public void InvalidTestReflectorInvoke(string method, string message)
+    {
+        MoodAnalyserReflector.ReflectorInvoke(method, message);
     }
 }

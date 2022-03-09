@@ -1,8 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace MoodAnalyzer;
 
-public static class MoodAnalyserFactory
+public static class MoodAnalyserReflector
 {
     /// <summary>
     /// Creates the mood analyser object.
@@ -38,6 +39,35 @@ public static class MoodAnalyserFactory
         }
         else
             throw new MoodAnalysisException(MoodAnalysisException.ExceptionType.NO_SUCH_METHOD, "Constructor is not found");
+        return null;
+    }
+
+    public static object ReflectorInvoke(string method, string message)
+    {
+        try
+        {
+            Type type = typeof(MoodAnalyser);
+            MethodInfo methodInfo = type.GetMethod(method);
+            object classInstance = Activator.CreateInstance(type);
+            FieldInfo fieldInfo = type.GetField("message");
+            try
+            {
+                fieldInfo.SetValue(classInstance, message);
+            }
+            catch (TargetException)
+            {
+                throw new MoodAnalysisException(MoodAnalysisException.ExceptionType.NO_SUCH_FIELD, "No such field");
+            }
+            catch (NullReferenceException)
+            {
+                throw new MoodAnalysisException(MoodAnalysisException.ExceptionType.NO_SUCH_FIELD, "No such field");
+            }
+            return methodInfo.Invoke(classInstance, null);
+        }
+        catch (TargetException)
+        {
+            throw new MoodAnalysisException(MoodAnalysisException.ExceptionType.NO_SUCH_METHOD, "No such method");
+        }
         return null;
     }
 }
