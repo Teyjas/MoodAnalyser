@@ -41,4 +41,13 @@ public class TestMood
         MoodAnalyser moodAnalyser = new MoodAnalyser(message);
         moodAnalyser.AnalyseMood();
     }
+
+    [TestMethod]
+    public void TestMoodReflectionDefaultCtor()
+    {
+        string message = null;
+        MoodAnalyser expected = new MoodAnalyser(message);
+        object obj = MoodAnalyserFactory.CreateMoodAnalyserObject("MoodAnalyzer.MoodAnalyser", "MoodAnalyser");
+        Assert.AreNotEqual(expected, obj);
+    }
 }
