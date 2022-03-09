@@ -31,4 +31,14 @@ public class TestMood
         string result = moodAnalyser.AnalyseMood();
         Assert.AreEqual("Happy", result);
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(MoodAnalysisException))]
+    [DataRow(null)]
+    [DataRow("")]
+    public void TestMoodException(string message)
+    {
+        MoodAnalyser moodAnalyser = new MoodAnalyser(message);
+        moodAnalyser.AnalyseMood();
+    }
 }
