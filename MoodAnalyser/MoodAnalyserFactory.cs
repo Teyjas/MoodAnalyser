@@ -5,17 +5,18 @@ namespace MoodAnalyzer;
 public static class MoodAnalyserFactory
 {
     /// <summary>
-    /// Creates the mood analyser object with default constructor
+    /// Creates the mood analyser object.
     /// </summary>
     /// <param name="className">Name of the class.</param>
     /// <param name="constructorName">Name of the constructor.</param>
-    /// <returns>Object of the className provided</returns>
+    /// <param name="message">The message.</param>
+    /// <returns></returns>
     /// <exception cref="MoodAnalyzer.MoodAnalysisException">
     /// No Such Class
     /// or
     /// No Such Method
     /// </exception>
-    public static object CreateMoodAnalyserObject(string className, string constructorName)
+    public static object CreateMoodAnalyserObject(string className, string constructorName, string message = "")
     {
         string pattern = @"." + constructorName + "$";
         Match result = Regex.Match(className, pattern);
@@ -24,7 +25,9 @@ public static class MoodAnalyserFactory
             try
             {
                 Type moodAnalyseType = Type.GetType(className);
-                return Activator.CreateInstance(moodAnalyseType);
+                if (message == "")
+                    return Activator.CreateInstance(moodAnalyseType);
+                return Activator.CreateInstance(moodAnalyseType, message);
             }
             catch (ArgumentNullException)
             {

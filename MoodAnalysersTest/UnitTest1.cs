@@ -50,4 +50,14 @@ public class TestMood
         object obj = MoodAnalyserFactory.CreateMoodAnalyserObject("MoodAnalyzer.MoodAnalyser", "MoodAnalyser");
         Assert.AreNotEqual(expected, obj);
     }
+    [TestMethod]
+    [ExpectedException(typeof(MoodAnalysisException))]
+    [DataRow("MoodAnalyzer.MoodAnalysers", "MoodAnalyser", "sad")]
+    [DataRow("MoodAnalyzer.MoodAnalyser", "MoodAnalysers", "sad")]
+    public void InvalidTestMoodReflectionParamCtor(string className, string ctorName, string message)
+    {
+        MoodAnalyser expected = new MoodAnalyser(message);
+        object obj = MoodAnalyserFactory.CreateMoodAnalyserObject(className, ctorName, message);
+        Assert.AreNotEqual(expected, obj);
+    }
 }
